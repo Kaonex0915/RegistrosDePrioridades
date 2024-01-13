@@ -1,0 +1,84 @@
+@page "/RegistroPrioridades"
+@inject PrioridadesBLL prioridadesBLL 
+
+<EditForm Model="prioridades" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="card">
+        <div class="card-header">
+            <h1>Registro de prioridades</h1>
+        </div>
+        <div class="card-body">
+            <label> ID: </label>
+            <div class="input-group">
+                <div class="col-md-2" >
+                    <InputNumber @bind-Value="prioridades.PrioridadId" class="form-control"> </InputNumber>
+                </div>
+
+                <button type="button" class="btn btn-outline-primary oi oi-magnifying-glass" @onclick="Buscar">    </button>                
+            </div>
+            
+            <div class="mb-3">
+                <label>Descripcion</label>
+                <InputTextArea @bind-Value="prioridades.Descripcion" class="form-control"> </InputTextArea>
+                <ValidationMessage For="@(()=> prioridades.Descripcion)"></ValidationMessage>
+
+            </div>
+
+
+            <label>Dias compromiso</label>
+            <InputNumber @bind-Value="prioridades.DiasCompromiso" class="form-control"> </InputNumber>
+            <ValidationMessage For="@(()=> prioridades.DiasCompromiso)"></ValidationMessage>
+        </div>
+
+        <div class="card-footer">
+
+            <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">Nuevo<i class="oi oi-file"/></button>
+            <button type="button" class="btn btn-outline-success">Guardar<i class="oi oi-document"/></button>
+            <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar<i class="oi oi-trash"/></button>
+        </div>
+
+    </div>    
+</EditForm>
+
+@code {
+    [Parameter]
+    public int PrioridadesId { get; set; }
+    public Prioridades prioridades = new Prioridades();
+
+        protected override void OnInitialized()
+        {
+            if(PrioridadesId > 0){
+                prioridades.PrioridadId = PrioridadesId;
+                Buscar();
+            }
+            
+        }
+
+        public void Buscar(){
+            var prioridadesEncontradas = prioridadesBLL.Buscar(prioridades.PrioridadId);
+
+            if(prioridadesEncontradas != null){
+                this.prioridades = prioridadesEncontradas;
+            }
+        } 
+
+        public void Nuevo(){
+            this.prioridades = new Prioridades();
+        }
+        
+        public void Guardar(){
+            Nuevo();
+            if(prioridadesBLL.Guardar(this.prioridades)){
+
+                }
+            
+        }
+
+        public void Eliminar(){
+                if(prioridadesBLL.Eliminar(this.prioridades)){
+                    Nuevo();
+                }
+            
+        }
+}
