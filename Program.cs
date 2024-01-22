@@ -14,6 +14,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 builder.Services.AddScoped<PrioridadesBLL>();
+builder.Services.AddScoped<ClientesBLL>();
 
 var app = builder.Build();
 

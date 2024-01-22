@@ -1,0 +1,143 @@
+@page "/RegistroClientes"
+@inject ClientesBLL clientesBLL 
+
+<EditForm Model="clientes" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="card">
+        <div class="card-header">
+            <h1>Registro de clientes</h1>
+        </div>
+        <div class="card-body">
+            <label> ID: </label>
+            <div class="input-group">
+                <div class="col-md-2" >
+                    <InputNumber @bind-Value="clientes.ClienteId" class="form-control"> </InputNumber>
+                </div>
+
+                <button type="button" class="btn btn-outline-primary oi oi-magnifying-glass" @onclick="Buscar">    </button>                
+            </div>
+            
+            <div class="mb-3">
+                <label>Nombre</label>
+                <InputText @bind-Value="clientes.Nombre" class="form-control"> </InputText>
+                <ValidationMessage For="@(()=> clientes.Nombre)"></ValidationMessage>
+
+            </div>
+
+            <div class="row">
+                <div class="col-3">
+                    <label>Telefono</label>
+                    <InputText @bind-Value="clientes.Telefono" class="form-control"> </InputText>
+                    <ValidationMessage For="@(()=> clientes.Telefono)"></ValidationMessage>
+                </div>
+                <div class="col-3">
+                    <label>Celular</label>
+                    <InputText @bind-Value="clientes.Celular" class="form-control"> </InputText>
+                    <ValidationMessage For="@(()=> clientes.Celular)"></ValidationMessage>
+                </div>
+            </div>
+            <br>
+            
+            <div class="row">
+                <div class="col-3">
+                    <label>RNC</label>
+                    <InputText @bind-Value="clientes.RNC" class="form-control"> </InputText>
+                    <ValidationMessage For="@(()=> clientes.RNC)"></ValidationMessage>
+                </div>
+                <div class="col-3">
+                    <label>Email</label>
+                    <InputText @bind-Value="clientes.Email" class="form-control"> </InputText>
+                    <ValidationMessage For="@(()=> clientes.Email)"></ValidationMessage>
+                </div>
+                
+            </div>
+                <br>
+                <div class="mb-3">
+                <label>Direcci&oacute;n</label>
+                <InputTextArea @bind-Value="clientes.Direccion" class="form-control"> </InputTextArea>
+                <ValidationMessage For="@(()=> clientes.Direccion)"></ValidationMessage>
+
+            </div>
+
+        </div>
+
+        <div class="card-footer">
+
+            <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">Nuevo<i class="oi oi-file"/></button>
+            <button type="button" class="btn btn-outline-success">Guardar<i class="oi oi-document"/></button>
+            <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar<i class="oi oi-trash"/></button>
+        </div>
+
+    </div>    
+</EditForm>
+
+@code {
+    [Parameter]
+    public int ClienteId { get; set; }
+    public Clientes clientes = new Clientes();
+
+        protected override void OnInitialized()
+        {
+            if(ClienteId > 0){
+                clientes.ClienteId = ClienteId;
+                Buscar();
+            }
+            
+        }
+
+        public void Buscar(){
+            var clientesEncontrados = clientesBLL.Buscar(clientes.ClienteId);
+
+            if(clientesEncontrados != null){
+                this.clientes = clientesEncontrados;
+            }
+        } 
+
+        public void Nuevo(){
+            this.clientes = new Clientes();
+        }
+
+        public bool Validar(){
+            if(string.IsNullOrEmpty(clientes.Nombre)){
+                return false;
+            }
+            if(string.IsNullOrEmpty(clientes.Telefono)){
+                return false;
+            }
+            if(string.IsNullOrEmpty(clientes.Celular)){
+                return false;
+            }
+            if(string.IsNullOrEmpty(clientes.RNC)){
+                return false;
+            }
+            if(string.IsNullOrEmpty(clientes.Direccion)){
+                return false;
+            }
+            if(string.IsNullOrEmpty(clientes.Email)){
+                return false;
+            }    
+            else{ 
+                return true;
+            }
+
+        }
+        
+        public void Guardar(){
+            if(Validar()){
+                if(clientesBLL.Guardar(this.clientes)){
+                  Nuevo();
+                }
+            }
+            
+        }
+
+        public void Eliminar(){
+            if(Validar()){
+                if(clientesBLL.Eliminar(this.clientes)){
+                    Nuevo();
+                }
+            }
+            
+        }
+}
