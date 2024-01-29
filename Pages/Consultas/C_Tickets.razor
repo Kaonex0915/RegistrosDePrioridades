@@ -1,0 +1,70 @@
+@page "/ConsultaTickets"
+
+@inject TicketsBLL TicketsBLL
+<div class="card">
+    <div class="card-header">
+        <h1>Registro de tickets</h1>
+    </div>
+    <div class="card-body">
+        <label>ID</label>
+        <div class="input-group">
+            <InputNumber @bind-Value="filtrar" class="form-control"></InputNumber>
+            <button type="button" class="btn btn-outline-primary oi oi-magnifying-glass" @onclick="Buscar"></button>
+            <button type="button" class="btn btn-outline-primary oi oi-reload" @onclick="Reiniciar"></button>
+        </div>
+
+        <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Ticked ID</th>
+                        <th>Fecha</th>
+                        <th>Cliente ID</th>
+                        <th>Sistema ID</th> 
+                        <th>Prioridad ID</th>
+                        <th>Solicitado por</th>
+                        <th>Asunto</th>
+                        <th>Descripci&oacute;n</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in L_Tickets)
+                    {
+                        <tr>
+                            <td>@item.TicketId</td>
+                            <td>@item.Fecha</td>
+                            <td>@item.ClienteId</td>
+                            <td>@item.SistemaId</td>
+                            <td>@item.PrioridadId</td>
+                            <td>@item.SolicitadoPor</td>
+                            <td>@item.Asunto</td>
+                            <td>@item.Descripcion</td>
+                            <td><a href="/RegistroTickets/@item.TicketId"><span class="oi oi-eye"></span></a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+    </div>
+</div>
+
+@code
+{
+    public Tickets tickets { get; set; } = new Tickets();
+    
+    public int filtrar { get; set; }
+    public List<Tickets> L_Tickets { get; set; } = new List<Tickets>();
+
+        protected override void OnInitialized()
+        {
+            L_Tickets = TicketsBLL.Listar(t => true);
+        }
+
+    public void Buscar()
+    {
+        L_Tickets = TicketsBLL.Listar(t => t.TicketId == filtrar);
+    }
+
+    public void Reiniciar()
+    {
+        L_Tickets = TicketsBLL.Listar(t => true);
+    }
+}
